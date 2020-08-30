@@ -1,0 +1,4 @@
+git add . 
+git commit -m "All Basic laravel files has been added " 
+git push origin master
+git log --oneline

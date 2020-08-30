@@ -1,0 +1,17 @@
+#Make api controllers 
+php artisan make:model Model/Product -a 
+php artisan make:model Model/Review -a 
+#ADD ProductController to the rout i.e. routes/api.php
+Route::Resource('/products','ProductController');
+php artisan route:list 
+#Change the Route as following 
+Route::apiResource('/products','ProductController');
+#check again route list 
+php artisan route:list 
+#Crate a group of routes as following: 
+Route::group(['prefix'=>'products'],function(){
+    Route::apiResource('/{products}/reviews','ReviewController');
+});
+
+php artisan route:list 
+
