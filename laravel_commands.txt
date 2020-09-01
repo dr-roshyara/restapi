@@ -37,3 +37,15 @@ factory(App\Model\Prodcut::class , 100)->create()
 #This will create 100 products 
 #Php artisan tinker 
 factory(App\Model\Review::class, 200)->ceate()
+#write the models and set the relationship 
+then go to php artisan tinker and check the relationship 
+    php artisan tinker
+     $product=App\Model\Product::all()->find(1)
+     $product->reviews 
+     $product->reviews->count()
+     $reivew=App\Model\Review::find(1)
+     $review->user
+     $review->product
+     
+
+        

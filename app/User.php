@@ -2,6 +2,8 @@
 
 namespace App;
 use App\Article;
+use App\Model\Review;
+use App\Model\Product;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -39,5 +41,12 @@ class User extends Authenticatable
     ];
     public function articles(){
         return $this->hasMany(Article::class);
+    }
+    public function reviews(){
+        return $this->hasMany(Review::class);
+
+    }
+    public function products(){
+        return $this->hasMany(Product::class);
     }
 }
