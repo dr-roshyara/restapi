@@ -1,17 +1,39 @@
 #Make api controllers 
-php artisan make:model Model/Product -a 
-php artisan make:model Model/Review -a 
-#ADD ProductController to the rout i.e. routes/api.php
-Route::Resource('/products','ProductController');
-php artisan route:list 
+    php artisan make:model Model/Product -a 
+    php artisan make:model Model/Review -a 
+#ADD ProductController to the rout i.e. routes/api.php  
+    Route::Resource('/products','ProductController');
+    php artisan route:list 
 #Change the Route as following 
-Route::apiResource('/products','ProductController');
+    Route::apiResource('/products','ProductController');
 #check again route list 
-php artisan route:list 
+    php artisan route:list 
 #Crate a group of routes as following: 
-Route::group(['prefix'=>'products'],function(){
-    Route::apiResource('/{products}/reviews','ReviewController');
-});
+    Route::group(['prefix'=>'products'],function(){
+        Route::apiResource('/{products}/reviews','ReviewController');
+    });
+#check agian the route by listing them 
+    php artisan route:list 
 
-php artisan route:list 
-
+#create factories for migration . 
+For this , go to database and corresponding factories . 
+create each of the column of model with the help of faker class librarry
+#Write the following commands in database\seeder\productseeder.php file 
+    factory(App\Model\Product::class, 50)->create();
+#write in the seeder class of Review 
+    factory(App\Model\Review::class, 50)->create();
+#Finally use the php artisan command to seed them 
+    php artisan db:seed 
+# We created factory files and database tables to migrate them . finally we use the following command to migrate them 
+php artisan migrate 
+#Then we have fill up the data use factories. 
+see the factory  files in databases\factories\
+You can populate the data by using php artisan tinker e.g. 
+php artisan tinker 
+factory(App\User::class , 100)->craete()
+#This command will create 100 random users 
+# then algain in tinker
+factory(App\Model\Prodcut::class , 100)->create()
+#This will create 100 products 
+#Php artisan tinker 
+factory(App\Model\Review::class, 200)->ceate()

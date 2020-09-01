@@ -2,3 +2,5 @@ git add .
 git commit -m "All Basic laravel files has been added " 
 git push origin master
 git log --oneline
+#To remove file named history.txt git reset history.txt
+git reset history.txt 
