@@ -46,6 +46,15 @@ then go to php artisan tinker and check the relationship
      $reivew=App\Model\Review::find(1)
      $review->user
      $review->product
-     
+# In this way you can set up the relationship between the products . 
+Now we create resources routing 
+#Go to the routes/api.php file and add the following routes 
+
+    Route::apiResource('/products','ProductController');
+    Route::group(['prefix'=>'products'],function(){
+        Route::apiResource('/{products}/reviews','ReviewController');
+    });
+# Also Go to ProductController and then add in the index file for example 
+    return Product::all()
 
         
