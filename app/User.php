@@ -49,4 +49,7 @@ class User extends Authenticatable
     public function products(){
         return $this->hasMany(Product::class);
     }
+    public function rating(){
+      return   $this->reviews->count() ? round($this->reviews->sum('star')/ $this->reviews->count(),1):'NO Rating Yet';
+    }
 }

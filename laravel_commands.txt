@@ -56,5 +56,19 @@ Now we create resources routing
     });
 # Also Go to ProductController and then add in the index file for example 
     return Product::all()
+# Create A Product Resource Collection 
+    php artisan  make:resource Product/ProductCollection 
+#This will create a  collection in app\resources\ProductCollection. you can look on it 
+#Now make another with following command 
+    php artisn make:resource Prodcut/ProductResource 
+    then change the the file Product/ProductResource which return 
+#Today we have created ProductResource 
+#03.09.2020 
+Now we would like to change the Product resource  by using a ProductResource::collection method . 
+Look at the ProductController index mathod .
+    return ProductResource::collection(Product  ::all());
+#Today I learned about product collection resources. 
+
+
 
         
