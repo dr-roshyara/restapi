@@ -13,7 +13,7 @@ class Review extends Model
     return   $this->belongsTo(Product::class);
    }
    // A review belongs to a particular user . 
-   public function user(){
+    public function user(){
        return $this->belongsTo(User::class);
    }
 }

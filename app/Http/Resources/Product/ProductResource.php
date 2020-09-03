@@ -22,7 +22,7 @@ class ProductResource extends JsonResource
             'price'=>$this->price1,
             'reviews'=>$this->rating(),
             'href'=>[
-                'reviews'=>route('reviews.index',$this->id),
+                'reviews'=>route('reviews.index', $this->id),
             ]
         ];
     }

@@ -68,7 +68,57 @@ Now we would like to change the Product resource  by using a ProductResource::co
 Look at the ProductController index mathod .
     return ProductResource::collection(Product  ::all());
 #Today I learned about product collection resources. 
+#Create the Resource for Review also 
+    php artisan make:resource ReviewResource 
+#After creating a Review Resources , you can edit it by returning the the review 
+   return [
+            'customer'=>$this->user->name,
+            'body'=> $this->review,
+            'star'=>$this->star,
+        ];
+#Also Add ReviewController index function as following 
+ public function index($id)
+    {
+        //
+        // return Review::all()->where('product_id','<=',12);
+        // return ReviewResource::Collection($product->reviews);
+        return ReviewResource::Collection(Product::find($id)->reviews);
 
+    }
+# In this way you can see the reviews in each products 
+#Now go to the  
+    http://127.0.0.1:8000/api/products/product_id/reviews/
+    e.g. 
+    http://127.0.0.1:8000/api/products/1/reviews/
+    etc. 
+# Finally  paginate the Products by adding 
+    paginate(20) 
+    in productController 
+      public function index()
+    {
+        //
+        // return ProductResource::collection(Product::all());
+        return ProductCollection::Collection(Product::paginate(5));
+    }
+# This way I learned how to return product and reviews as api 
+#Next we leran about adding laravel passport packages 
+#For this , install the passwort packages by using the following command 
+    composer require laravel/passport 
+ #it will take a  while till the package is installled 
+    The Passport service provider registers its own database migration directory with the framework, so you should migrate your database after installing the package. The Passport migrations will create the tables your application needs to store clients and access tokens:
 
+    php artisan migrate
+ #Next you use  the following command: 
+    php artisan passport:install 
+#After running the passport:install command, add the Laravel\Passport\HasApiTokens trait to your App\User model. This trait will provide a few helper methods to your model which allow you to inspect the authenticated user's token and scopes:
+the install command gives the following 
+$ php artisan passport:install
+Encryption keys generated successfully.
+Personal access client created successfully.
+Client ID: 1
+    Client secret: RlKhXWpNvc6ONuCY8HFKvNpzAqQAiuoucIwTKWSl
+    Password grant client created successfully.
+Client ID: 2
+    Client secret: 86HCo90igKh1X6Yw04DH0yswsF2uwPN68Yiwoi6i
+#rest tomorrow 
 
-        
