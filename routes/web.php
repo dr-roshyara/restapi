@@ -18,3 +18,6 @@ Route::get('/', function () {
 });
 Route::get('/contact','ContactMeController@show');
 Route::post('/contact','ContactMeController@store');
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

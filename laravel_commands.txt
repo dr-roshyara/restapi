@@ -112,13 +112,135 @@ Look at the ProductController index mathod .
     php artisan passport:install 
 #After running the passport:install command, add the Laravel\Passport\HasApiTokens trait to your App\User model. This trait will provide a few helper methods to your model which allow you to inspect the authenticated user's token and scopes:
 the install command gives the following 
-$ php artisan passport:install
-Encryption keys generated successfully.
-Personal access client created successfully.
+    php artisan passport:install
+    Encryption keys generated successfully.
+    Personal access client created successfully.
 Client ID: 1
     Client secret: RlKhXWpNvc6ONuCY8HFKvNpzAqQAiuoucIwTKWSl
     Password grant client created successfully.
 Client ID: 2
     Client secret: 86HCo90igKh1X6Yw04DH0yswsF2uwPN68Yiwoi6i
-#rest tomorrow 
+#Rest tomorrow 
+04.09.2020 
+Today I am learning the use of passport package of laravel . Yesterrday I already installed it . 
+In order to test the passport authnication, I am using postman. 
+    https://web.postman.co/
+    postman.com 
+We should use this webiste . This is my first time that I use the postman . So it was  a bit difficult for me 
+to find out how to use it. However Now I got an idea to use it. 
+#I had some problem to go further  by using post man. So I decided to learn the passport package form the 
+tutorial of laravel page 
+# I followed further 
+I did the followings 
+ Today I installed the laravel authnication package with composer 
+    composer require laravel/ui 
+This command installed the ui package and I ran the follwoing command 
+    php artisan ui  vue --auth 
+#To publish the Passport Vue components, use the vendor:publish Artisan command:
+    php artisan vendor:publish --tag=passport-components
+#then I did the following  command 
+    npm install & npm run dev 
+    npm audit fix 
+# There was a problem with the vue version and I used the following command to solve it . 
+    npm update vue-template-compiler
+ # Then i reran agian the command 
+    npm run dev . 
+It compiled everything . I could see the autnication and login file where I can land on the home page . 
+
+#However I follow the following video just to use a login controller myself . 
+    https://www.youtube.com/watch?v=R3Hec0_U2Cs
+#By folloiwng the video I  made the controller as follows: 
+    php artisan make:controller Api/V1/LoginController 
+Go to the Api\V1\LoginController and edit it as following . 
+   PASSPORT_PERSONAL_ACCESS_CLIENT_ID=1
+    PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET=RlKhXWpNvc6ONuCY8HFKvNpzAqQAiuoucIwTKWSl
+# Add the following lines to AuthServiceProvider in boot file 
+        Passport::routes();
+        Passport::personalAccessClientId(
+            config('passport.personal_access_client.id')
+        );
+
+        Passport::personalAccessClientSecret(
+            config('passport.personal_access_client.secret')
+        );
+ #I would like to follow the steps in this script 
+ https://dev.to/azibom/how-do-you-make-laravel-7-api-authentication-with-passport-like-a-master-2p67
+# I also followed this  tutorial
+https://medium.com/modulr/create-api-rest-with-laravel-7-passport-authentication-part-1-a8198e5d0a9
+
+#I created the loginController which looks as follows 
+
+<?php
+
+namespace App\Http\Controllers\Api\V1;
+use App\user;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+class AuthController extends Controller  
+{
+    //
+    public function login(Request $request)
+    {
+        $loginData = $request->validate([
+            'email' => 'email|required',
+            'password' => 'required'
+        ]);
+
+        if (!auth()->attempt($loginData)) {
+            return response(['message' => 'Invalid Credentials']);
+        }
+
+        $accessToken = auth()->user()->createToken('authToken')->accessToken;
+
+        return response(['user' => auth()->user(), 'access_token' => $accessToken]);
+    }
+}
+#and add the followings in route file 
+Route::group([
+    'prefix' => 'auth'
+], function () {
+    Route::post('login', '\App\Http\Controllers\Api\V1\AuthController@login');
+    Route::get('login', function(){
+         return "test";
+    });
+    // Route::post('signup', 'AuthController@signup');
+ 
+    Route::group([
+        'middleware' => 'auth:api'
+    ], function () {
+        Route::get('logout', '\App\Http\Controllers\Api\V1\AuthController@logout');
+        // Route::get('user', 'AuthController@user');
+    });
+});
+# I write the follwing things in postman 
+  in the header type: 
+   content-type =application/json 
+   Accept   application /json 
+    in the body I wrote the following : 
+    {
+        "email": "mathematikboy@yahoo.com",
+        "password": "12345678"
+        
+    }
+Then I checked for post method of the 
+http://127.0.0.1:8000/api/auth/login
+There was an error . This error was solved by using the follwing command 
+
+    php artisan config:clear
+ Then I got a token . now use the token to get the user ! 
+ I have added an environment in postman and then 
+ Then I checked  for 
+ http://127.0.0.1:8000/api/user
+ where I got the  full infomration of the author 
+ {
+    "id": 12,
+    "name": "Nab Roshyara",
+    "email": "mathematikboy@yahoo.com",
+    "email_verified_at": "2020-09-04T22:20:26.000000Z",
+    "created_at": "2020-09-04T20:19:57.000000Z",
+    "updated_at": "2020-09-04T20:19:57.000000Z"
+}  
+#read this also 
+https://codesource.io/authenticating-laravel-apis-using-passport/
 

@@ -2,10 +2,12 @@
 
 namespace App\Model;
 use App\Model\Review;
+use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
+    protected $guraded =[];
     //
     // A Product has many Reviews : i.e. 
     public function reviews(){

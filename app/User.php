@@ -7,10 +7,11 @@ use App\Model\Product;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable 
 {
-    use Notifiable;
+    use HasApiTokens,  Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -46,10 +47,5 @@ class User extends Authenticatable
         return $this->hasMany(Review::class);
 
     }
-    public function products(){
-        return $this->hasMany(Product::class);
-    }
-    public function rating(){
-      return   $this->reviews->count() ? round($this->reviews->sum('star')/ $this->reviews->count(),1):'NO Rating Yet';
-    }
+ 
 }
