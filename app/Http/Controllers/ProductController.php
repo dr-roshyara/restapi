@@ -2,13 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProductRequest;
 use App\Http\Resources\Product\ProductResource;
 use App\Http\Resources\Product\ProductCollection;
 use App\Model\Product;
+use Symfony\Component\HttpFoundation\Response;
+
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
+    protected $fillable = ['name', 'description', 'price1', 'price2', 'summary']; 
+    public function __construct(){
+        $this->middleware('auth:api')->except(['index', 'show']);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -37,8 +44,35 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ProductRequest $request)
     {
+        //  $validate =[
+        //     'name' => 'required',
+        //     'slug' => 'required',
+        //     'description' => 'required',
+        //     'price1' => 'required',
+        //     'price2'=>'required',
+        //     'stock' => 'required',
+        //     'discount' => 'required',
+        //     'summary' => 'required'
+             
+        //  ];
+        //  $validateData =$request->validate($validate);
+         $validateData =$request->all();
+         $product =new Product; 
+         $product->name= $validateData['name'];
+         $product->slug= $validateData['slug'];
+         $product->description = $validateData['description'];
+         $product->price1 = $validateData['price1']; 
+         $product->price2 = $validateData['price2'];
+         $product->stock = $validateData['stock'];
+         $product->discount = $validateData['discount'];
+         $product->summary = $validateData['summary'];
+         $product->save();
+
+         return response([
+             'data'=> new ProductResource($product)
+         ], Response::HTTP_CREATED);
         //
     }
 
@@ -76,6 +110,21 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         //
+        $update= $request->all();
+        if ($update['name']) {
+            $product['name'] = $update['name'];
+            unset($request['name']);
+        }
+            if($update['description']){
+                   $product['description'] =$update['description']; 
+                   unset($request['description']);
+            }
+            // $product->update($update);
+            
+       return response([
+            'data' => new ProductResource($product)
+        ], Response::HTTP_CREATED);
+        //
     }
 
     /**
@@ -87,6 +136,9 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         //
+        
+        $product->delete();
+         return response(null, Response::HTTP_NO_CONTENT);
     }
    
 }

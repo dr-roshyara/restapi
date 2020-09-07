@@ -243,4 +243,120 @@ There was an error . This error was solved by using the follwing command
 }  
 #read this also 
 https://codesource.io/authenticating-laravel-apis-using-passport/
+#Create Products 
+    #Now we are creating a situation like every authnicated user can create products. For that 
+    #For that I have added a __constrcut method in product controller which looks like the following . 
+    #Edit product controller method 
+    App/Http/Controller/ProductControlelr.php 
+    public function __construct(){
+        $this->middleware('auth:api')->except(['index', 'show']);
+    }
+    #check in the post man if the following  link is accessiable 
+    link : http://127.0.0.1:8000/api/products
+    method: post 
+    Accept : application/json 
+    content-type: application/json 
+    Authorization: auth api {{auth}}
+    #How to create authapi environment . 
+    #Go to the new environment and edit it by adding 
+    variable: auth 
+    initial value:  Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiZDMxNGZlMDM5MDRiZWE4OWRkMWYyMjkwNGVjNDI0NWRjYjZlNjU2Zjc1ZGJlMjE1YzBlOWFmNWQ4NTI5ZmJiYTljNzhhMDAxNmFlYzVmOGEiLCJpYXQiOjE1OTkzMjQ5NTgsIm5iZiI6MTU5OTMyNDk1OCwiZXhwIjoxNjMwODYwOTU4LCJzdWIiOiIxMiIsInNjb3BlcyI6W119.K8QTS4gBAPaUTJY3eMxtClGpCMq9xMr91gbUOoiW3n8JiXnuh9168qD7Kks4OL-4NSnOVWywEIITEnMVbtcnDya2azWtWWDCws51xKGjkqFidwetlynv1lpZITQEIc9oXGXjQ9xswLcmj1YzG0WkKFRL74o-Nu-GPBNEYKUH-WnyTuLfOycpaPHjD_uY99iHjmnvFHSpVWiSzygaNPnz0RRhlUtdqvNlhP9bnEuIA8_K6JTrX3rPV9sBGRlytleLEwjkq4jJfuRlzqBA6Wu_rMYP12c7w5YTAtl3JtH3bQd6JyMP5CkXaNJ1cBKLexT4CcY0nhbRqW7yJ31yRH91FwPJCyFFA-roQwnYHSOP1e1rSGYDDJ1n6IafMYLXWX64GdPT1_6RPPavDnZivU72mC1BQpTad4IzyI_uB6QFX1Tk2Pjnxgd7YaX3a5aayLaZrAE9Jo9yvaJX1U4oCrnZ7CNkWWRGD7pwC-PQkkeukM-XDtxipPdxhQN7i4BzqCDkzAqtnZUuyYb47HWnmuAUknRuRP6oVnNm6GP4ZSU72nQMtdUy1XDkE4vXPdhcpcsNmPRihZoHscWIgV4Cdn15UA8kdV5NRB-EpOdNCvras--c70SX0j4FcBLWYF54qS_B2Vqr46hJBRJ9jbVU34dPFt8H3p2MPr9uW-Rh00OrD6U
+    #use this as authapi environment 
+    #and add 
+    authorization : {{auth}}
+#   #
+    #Above link hit the store method 
+#Product Validation 
+    #For the validation , we want to create a ProductRequest Resouce where we set the validation rule . 
+    #For this, we use the following command 
+    php artisan make:request ProductRequest 
+    #This creates a product request . Here you can define two things. 
+#    #1. authorization 
+    public function authorize()
+    {
+        return true;
+    }
+#   #2. Rules .e.g. validation 
+    return [
+            //
+            'name' => 'required',
+            'slug' => 'required',
+            'description' => 'required',
+            'price1' => 'required',
+            'price2' => 'required',
+            'stock' => 'required',
+            'discount' => 'required',
+            'summary' => 'required'
+        ];
+#       #finally you can use ProductRequest instead of Request 
+        e.g. look at the following product controller store method . 
+        public function store(ProductRequest $request)
+    {
+        //  $validate =[
+        //     'name' => 'required',
+        //     'slug' => 'required',
+        //     'description' => 'required',
+        //     'price1' => 'required',
+        //     'price2'=>'required',
+        //     'stock' => 'required',
+        //     'discount' => 'required',
+        //     'summary' => 'required'
+             
+        //  ];
+        //  $validateData =$request->validate($validate);
+         $validateData =$request->all();
+         $product =new Product; 
+         $product->name= $validateData['name'];
+         $product->slug= $validateData['slug'];
+         $product->description = $validateData['description'];
+         $product->price1 = $validateData['price1']; 
+         $product->price2 = $validateData['price2'];
+         $product->stock = $validateData['stock'];
+         $product->discount = $validateData['discount'];
+         $product->summary = $validateData['summary'];
+         $product->save();
 
+         return response([
+             'data'=> new ProductResource($product)
+         ], Response::HTTP_CREATED);
+        //
+      } 
+ #Update of the Products. 
+    #In order to update the products, we need to use the update method. 
+    #Agian we need same condition to check it with postman 
+    # 
+    public function update(Request $request, Product $product)
+    {
+        //
+        $update= $request->all();
+        if ($update['name']) {
+            $product['name'] = $update['name'];
+            unset($request['name']);
+        }
+            if($update['description']){
+                   $product['description'] =$update['description']; 
+                   unset($request['description']);
+            }
+            // $product->update($update);
+            
+       return response([
+            'data' => new ProductResource($product)
+        ], Response::HTTP_CREATED);
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Model\Product  $product
+     * @return \Illuminate\Http\Response
+     */
+#   #For Delete purpose      
+    public function destroy(Product $product)
+    {
+        //
+        
+        $product->delete();
+         return response(null, Response::HTTP_NO_CONTENT);
+    }
+#   # All functions are working            
